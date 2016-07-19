@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'BOShareComposer_Example' do
+  pod 'BOShareComposer', :path => '../'
+
+  target 'BOShareComposer_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
