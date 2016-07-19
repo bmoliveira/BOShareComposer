@@ -9,34 +9,21 @@
 Pod::Spec.new do |s|
   s.name             = 'BOShareComposer'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of BOShareComposer.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
+  s.summary          = 'A simple text + URL share composer'
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+Composer like share to do custom shares, example: share via direct message twitter they dont have
+any composer to send direct messages
                        DESC
 
-  s.homepage         = 'https://github.com/<GITHUB_USERNAME>/BOShareComposer'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'https://github.com/bmoliveira/BOShareComposer'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Bruno Oliveira' => 'bm.oliveira.dev@gmail.com' }
-  s.source           = { :git => 'https://github.com/<GITHUB_USERNAME>/BOShareComposer.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => 'https://github.com/bmoliveira/BOShareComposer.git', :tag => s.version.to_s }
+  s.social_media_url = 'https://twitter.com/_bmoliveira>'
 
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'BOShareComposer/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'BOShareComposer' => ['BOShareComposer/Assets/*.png']
-  # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'SnapKit', '= 0.30.0.beta2'
 end

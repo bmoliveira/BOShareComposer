@@ -1,0 +1,19 @@
+PODS:
+  - BOShareComposer (0.1.0):
+    - SnapKit (= 0.30.0.beta2)
+  - SnapKit (0.30.0.beta2)
+
+DEPENDENCIES:
+  - BOShareComposer (from `../`)
+
+EXTERNAL SOURCES:
+  BOShareComposer:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  BOShareComposer: fbe8d435eb54145edd44947df4b00df7c3d87fd5
+  SnapKit: c4bb32b1d3c5d18ff63bf95ffcbc599d2bab964c
+
+PODFILE CHECKSUM: ebabc5cffc9d195fddf0d433022ad0f4babbc4e7
+
+COCOAPODS: 1.1.0.beta.1

@@ -1,0 +1,6 @@
+framework module BOShareComposer {
+  umbrella header "BOShareComposer-umbrella.h"
+
+  export *
+  module * { export * }
+}

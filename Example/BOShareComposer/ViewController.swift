@@ -7,11 +7,17 @@
 //
 
 import UIKit
+import BOShareComposer
 
 class ViewController: UIViewController {
 
+  lazy var shareViewModel: ShareViewModel = {
+    return ShareViewModel(text: "asdas")
+  }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -20,5 +26,23 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+  @IBAction func share(sender: AnyObject) {
+    BOShareViewController.presentShareViewController(from: self,
+                                                     shareViewModel: shareViewModel,
+                                                     shareDelegate: self)
+  }
 }
 
+extension ViewController: ShareDelegate {
+  func willAppear() {
+    print("will appear")
+  }
+
+  func submit(viewModel: ShareViewModel) {
+    print("\(viewModel)")
+  }
+
+  func willDisapear() {
+    print("will disapear")
+  }
+}
