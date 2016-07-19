@@ -19,7 +19,7 @@ any composer to send direct messages
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Bruno Oliveira' => 'bm.oliveira.dev@gmail.com' }
   s.source           = { :git => 'https://github.com/bmoliveira/BOShareComposer.git', :tag => s.version.to_s }
-  s.social_media_url = 'https://twitter.com/_bmoliveira>'
+  s.social_media_url = 'https://twitter.com/_bmoliveira'
 
   s.ios.deployment_target = '8.0'
 

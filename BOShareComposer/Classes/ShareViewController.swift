@@ -145,7 +145,7 @@ extension BOShareViewController {
   private func setupViews() {
     view.backgroundColor = UIColor.whiteColor()
     view.addSubview(backgroundView)
-    backgroundView.snp_makeConstraints { make in
+    backgroundView.snp.makeConstraints { make in
       make.edges.equalTo(self.view)
     }
 
@@ -159,7 +159,7 @@ extension BOShareViewController {
 
     let contentView = containerView.contentView
     contentView.addSubview(cancelButton)
-    cancelButton.snp_makeConstraints { make in
+    cancelButton.snp.makeConstraints { make in
       make.top.equalTo(contentView).inset(4)
       make.left.equalTo(contentView).inset(8)
     }
@@ -172,7 +172,7 @@ extension BOShareViewController {
 
     contentView.addSubview(titleDivider)
     titleDivider.snp.makeConstraints { make in
-      make.top.equalTo(cancelButton.snp_bottom)
+      make.top.equalTo(cancelButton.snp.bottom)
       make.left.equalTo(contentView)
       make.right.equalTo(contentView)
       make.height.equalTo(1)
@@ -181,16 +181,16 @@ extension BOShareViewController {
     contentView.addSubview(popupTitle)
     popupTitle.snp.makeConstraints { make in
       make.top.equalTo(contentView)
-      make.bottom.equalTo(titleDivider.snp_top)
+      make.bottom.equalTo(titleDivider.snp.top)
       make.centerX.equalTo(contentView)
-      make.left.equalTo(cancelButton.snp_right).priorityLow()
-      make.right.equalTo(confirmButton.snp_left).priorityLow()
+      make.left.equalTo(cancelButton.snp.right).priorityLow()
+      make.right.equalTo(confirmButton.snp.left).priorityLow()
     }
 
     let dummyContentView = UIView()
     contentView.addSubview(dummyContentView)
     dummyContentView.snp.makeConstraints { make in
-      make.top.equalTo(titleDivider.snp_bottom)
+      make.top.equalTo(titleDivider.snp.bottom)
       make.left.equalTo(contentView).inset(8)
       make.right.equalTo(contentView).inset(8)
       make.bottom.equalTo(contentView).inset(8)

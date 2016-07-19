@@ -9,7 +9,12 @@
 import Foundation
 
 public protocol ShareDelegate {
+  // Modal will appear
   func willAppear()
+
+  // When share is submited
   func submit(viewModel: ShareViewModel)
+
+  // Modal will be dismissed
   func willDisapear()
 }
