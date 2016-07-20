@@ -1,6 +1,8 @@
 PODS:
   - BOShareComposer (0.1.0):
+    - Kanna (~> 1.1)
     - SnapKit (= 0.30.0.beta2)
+  - Kanna (1.1.0)
   - SnapKit (0.30.0.beta2)
 
 DEPENDENCIES:
@@ -11,9 +13,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BOShareComposer: fbe8d435eb54145edd44947df4b00df7c3d87fd5
+  BOShareComposer: 1f0feb84ce5c5583cd35b32d18a3e4938f3849bf
+  Kanna: 355ed0193e5d8caf4fd996856b5bc98d586c11b6
   SnapKit: c4bb32b1d3c5d18ff63bf95ffcbc599d2bab964c
 
-PODFILE CHECKSUM: ebabc5cffc9d195fddf0d433022ad0f4babbc4e7
+PODFILE CHECKSUM: 34105de0c22ed3618df2454faee766a693725c3d
 
 COCOAPODS: 1.1.0.beta.1

@@ -18,15 +18,33 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P45-wr-ZfT">
-                                <rect key="frame" x="280" y="285" width="40" height="30"/>
-                                <state key="normal" title="Share"/>
+                                <rect key="frame" x="241" y="285" width="118" height="30"/>
+                                <state key="normal" title="Share with image"/>
                                 <connections>
                                     <action selector="share:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="0uM-gV-EyM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6J-PC-Cnc">
+                                <rect key="frame" x="230" y="323" width="141" height="30"/>
+                                <state key="normal" title="Share without image"/>
+                                <connections>
+                                    <action selector="shareWithoutMetadata:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="GWQ-IX-wdd"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iUR-SU-jR2">
+                                <rect key="frame" x="219" y="361" width="162" height="30"/>
+                                <state key="normal" title="share without metadata"/>
+                                <connections>
+                                    <action selector="shareWithoutData:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="la8-uz-YRD"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="iUR-SU-jR2" firstAttribute="top" secondItem="P6J-PC-Cnc" secondAttribute="bottom" constant="8" id="0D0-oI-bEr"/>
+                            <constraint firstItem="P6J-PC-Cnc" firstAttribute="top" secondItem="P45-wr-ZfT" secondAttribute="bottom" constant="8" id="KUW-M8-2gr"/>
+                            <constraint firstItem="iUR-SU-jR2" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="jVH-z0-z2a"/>
+                            <constraint firstItem="P6J-PC-Cnc" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="qDk-NQ-9ab"/>
                             <constraint firstItem="P45-wr-ZfT" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="rjF-19-jnG"/>
                             <constraint firstItem="P45-wr-ZfT" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="w98-cD-bft"/>
                         </constraints>

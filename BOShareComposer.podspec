@@ -26,4 +26,5 @@ any composer to send direct messages
   s.source_files = 'BOShareComposer/Classes/**/*'
 
   s.dependency 'SnapKit', '= 0.30.0.beta2'
+  s.dependency 'Kanna', '~> 1.1'
 end

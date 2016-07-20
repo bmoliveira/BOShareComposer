@@ -8,47 +8,100 @@
 
 import UIKit
 import SnapKit
+import WebKit
 
 public extension BOShareViewController {
   public static func presentShareViewController(from viewController: UIViewController,
-                                                     shareViewModel: ShareViewModel,
-                                                     shareDelegate: ShareDelegate,
-                                                     completion: (()->())? = nil) {
+                                                     shareContent: ShareContent,
+                                                     options: ShareOptions = ShareOptions(),
+                                                     completion: ((Bool, ShareContent?) -> ())) {
 
     viewController.navigationController?.modalPresentationStyle = .OverCurrentContext
     viewController.modalPresentationStyle = .OverCurrentContext
     let shareViewController = BOShareViewController()
-    shareViewController.shareDelegate = shareDelegate
-    shareViewController.viewModel = shareViewModel
-
-    viewController.presentViewController(shareViewController,
-                                         animated: false,
-                                         completion: completion)
+    shareViewController.completion = completion
+    shareViewController.options = options
+    shareViewController.shareContent = shareContent
+    viewController.presentViewController(shareViewController, animated: false, completion: nil)
   }
 }
 
 public class BOShareViewController: UIViewController {
 
-  var viewModel: ShareViewModel?
-  var shareDelegate: ShareDelegate?
+  private var metadataImageViewSize = CGSize(width: 70, height: 70)
 
-  lazy var cancelButton: UIButton = {
+  private var shareContent: ShareContent? {
+    willSet(value) {
+      if let currentValue = shareContent, newValue = value
+        where newValue.link == currentValue.link {
+        return
+      }
+      guard let newValue = value else {
+        return
+      }
+      loadMetadata(newValue)
+    }
+    didSet {
+      guard let shareContent = shareContent else {
+        return
+      }
+      popupBody.text = shareContent.text
+
+      if shareContent.link == nil {
+        showMetadata = false
+      }
+    }
+  }
+
+  private var options: ShareOptions? {
+    didSet {
+      guard let options = options else {
+        return
+      }
+      dismissButton.tintColor = options.tintColor
+      dismissButton.setTitle(options.dismissText, forState: .Normal)
+      confirmButton.tintColor = options.tintColor
+      confirmButton.setTitle(options.confirmText, forState: .Normal)
+      popupTitle.text = options.title
+      popupBody.resignFirstResponder()
+      popupBody.keyboardAppearance = options.keyboardAppearance
+      popupBody.becomeFirstResponder()
+      showMetadata = options.showMetadata
+    }
+  }
+
+  private var showMetadata = true {
+    didSet {
+      guard !metadataImageView.constraints.isEmpty else {
+        return
+      }
+      let size = showMetadata ? metadataImageViewSize : CGSize.zero
+      metadataImageView.snp.updateConstraints { make in
+        make.height.equalTo(size.height)
+        make.width.equalTo(size.width)
+      }
+      UIView.animateWithDuration(0.5) {
+        self.metadataImageView.layoutIfNeeded()
+      }
+    }
+  }
+
+  private var completion: ((Bool, ShareContent?) -> ())?
+
+  lazy var dismissButton: UIButton = {
     let button = UIButton(type: UIButtonType.System)
-    button.setTitle("Cancel", forState: .Normal)
     button.addTarget(self, action: #selector(cancelAction), forControlEvents: .TouchUpInside)
     return button
   }()
 
   lazy var confirmButton: UIButton = {
     let button = UIButton(type: UIButtonType.System)
-    button.setTitle("Send", forState: .Normal)
     button.addTarget(self, action: #selector(sendAction), forControlEvents: .TouchUpInside)
     return button
   }()
 
   lazy var popupTitle: UILabel = {
     let label = UILabel()
-    label.text = "Share"
     return label
   }()
 
@@ -63,10 +116,17 @@ public class BOShareViewController: UIViewController {
     textField.editable = true
     textField.backgroundColor = UIColor.clearColor()
     textField.scrollEnabled = true
-    textField.text = "A random message to send to a dummy user!"
     textField.font = UIFont.systemFontOfSize(18)
     textField.becomeFirstResponder()
     return textField
+  }()
+
+  lazy var metadataImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.contentMode = .ScaleAspectFill
+    imageView.clipsToBounds = true
+    imageView.backgroundColor = UIColor.whiteColor()
+    return imageView
   }()
 
   lazy var backgroundView: UIView = {
@@ -83,6 +143,8 @@ public class BOShareViewController: UIViewController {
     return visualEffectView
   }()
 
+  var metadataWebView = WKWebView()
+
   override public func viewDidLoad() {
     super.viewDidLoad()
     setupViews()
@@ -90,38 +152,74 @@ public class BOShareViewController: UIViewController {
 
   public override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    shareDelegate?.willAppear()
-    popupTitle.text = viewModel?.title ?? ""
-    popupBody.text = viewModel?.text ?? ""
     showView()
   }
 
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    shareDelegate?.willDisapear()
     hideView()
   }
 
   func cancelAction() {
+    shareContent?.text = popupBody.text
+    completion?(false, shareContent)
     hideView { _ in
       self.dismissViewControllerAnimated(false, completion: nil)
     }
   }
 
   func sendAction() {
-    if var viewModel = viewModel {
-      viewModel.text = popupBody.text
-      shareDelegate?.submit(viewModel)
-    }
+    shareContent?.text = popupBody.text
+    completion?(true, shareContent)
     hideView { _ in
       self.dismissViewControllerAnimated(false, completion: nil)
     }
   }
 }
 
+extension BOShareViewController: WKNavigationDelegate {
+  public func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
+                      withError error: NSError) {
+    print("failed navigation")
+  }
 
+  public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    let dispatchTime: dispatch_time_t =
+      dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
+
+    dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+      self.snapWebView(webView)
+    })
+  }
+
+
+}
 
 extension BOShareViewController {
+
+  private func loadMetadata(shareContent: ShareContent) {
+    guard let link = shareContent.link where self.showMetadata else {
+      print("No link found / metadata disabled")
+      return
+    }
+
+    OpenGraph.fetchMetadata(link, completion: { [weak self] (response) in
+      guard let response = response, imageURL = response.imageURL else {
+        self?.loadWebView(link)
+        return
+      }
+      self?.metadataImageView.setImage(withUrl: imageURL)
+      })
+  }
+
+  private func loadWebView(url: NSURL) {
+    metadataWebView.navigationDelegate = self
+    metadataWebView.loadRequest(NSURLRequest(URL: url))
+  }
+
+  private func snapWebView(webView: WKWebView) {
+    metadataImageView.fadeSetImage(webView.screenshot)
+  }
 
   private func showView() {
     UIView.animateWithDuration(0.5) {
@@ -158,8 +256,8 @@ extension BOShareViewController {
     }
 
     let contentView = containerView.contentView
-    contentView.addSubview(cancelButton)
-    cancelButton.snp.makeConstraints { make in
+    contentView.addSubview(dismissButton)
+    dismissButton.snp.makeConstraints { make in
       make.top.equalTo(contentView).inset(4)
       make.left.equalTo(contentView).inset(8)
     }
@@ -172,7 +270,7 @@ extension BOShareViewController {
 
     contentView.addSubview(titleDivider)
     titleDivider.snp.makeConstraints { make in
-      make.top.equalTo(cancelButton.snp.bottom)
+      make.top.equalTo(dismissButton.snp.bottom)
       make.left.equalTo(contentView)
       make.right.equalTo(contentView)
       make.height.equalTo(1)
@@ -183,7 +281,7 @@ extension BOShareViewController {
       make.top.equalTo(contentView)
       make.bottom.equalTo(titleDivider.snp.top)
       make.centerX.equalTo(contentView)
-      make.left.equalTo(cancelButton.snp.right).priorityLow()
+      make.left.equalTo(dismissButton.snp.right).priorityLow()
       make.right.equalTo(confirmButton.snp.left).priorityLow()
     }
 
@@ -197,12 +295,28 @@ extension BOShareViewController {
       make.height.equalTo(140)
     }
 
+    dummyContentView.addSubview(metadataImageView)
+    metadataImageView.snp.makeConstraints { make in
+      make.right.equalTo(dummyContentView)
+      make.height.equalTo(showMetadata ? metadataImageViewSize.height : 0)
+      make.width.equalTo(showMetadata ? metadataImageViewSize.width : 0)
+      make.centerY.equalTo(dummyContentView)
+    }
+
     dummyContentView.addSubview(popupBody)
     popupBody.snp.makeConstraints { make in
       make.top.equalTo(dummyContentView)
       make.left.equalTo(dummyContentView)
-      make.right.equalTo(dummyContentView)
+      make.right.equalTo(metadataImageView.snp.left)
       make.bottom.equalTo(dummyContentView)
+    }
+
+    view.addSubview(metadataWebView)
+    metadataWebView.snp.makeConstraints { make in
+      make.top.equalTo(view.snp.bottom)
+      make.left.equalTo(view.snp.right)
+      make.height.equalTo(view.snp.width)
+      make.width.equalTo(view.snp.width)
     }
   }
 }

@@ -11,38 +11,59 @@ import BOShareComposer
 
 class ViewController: UIViewController {
 
-  lazy var shareViewModel: ShareViewModel = {
-    return ShareViewModel(text: "asdas")
+  lazy var shareContentWithMetaData: ShareContent = {
+    return ShareContent(
+      text: "Sample site that implements facebook metatags",
+      link: NSURL(string: "https://medium.com/@samvlu/100-days-of-swift-736d45a19b63#.a1llu43fd")!
+    )
   }()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+  lazy var shareContentWithoutMetaData: ShareContent = {
+    return ShareContent(
+      text: "We don't have metadata so we show the web page",
+      link: NSURL(string: "https://news.ycombinator.com/")!
+    )
+  }()
 
-        // Do any additional setup after loading the view, typically from a nib.
-    }
+  lazy var shareOptions: ShareOptions = {
+    return ShareOptions(tintColor: UIColor.redColor(), title: "Custom title", dismissText: "Dismiss",
+                        confirmText: "Confirm", showMetadata: true)
+  }()
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+  lazy var shareOptionsNoMetadata: ShareOptions = {
+    return ShareOptions(tintColor: UIColor.redColor(), title: "Custom title", dismissText: "Dismiss",
+                        confirmText: "Confirm", showMetadata: false)
+  }()
+
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+  }
+
+  @IBAction func shareWithoutData(sender: AnyObject) {
+    BOShareViewController
+      .presentShareViewController(from: self,
+                                  shareContent: shareContentWithoutMetaData,
+                                  options: shareOptionsNoMetadata) { (completed, shareContent) in
+                                    print(shareContent)
     }
+  }
+
+  @IBAction func shareWithoutMetadata(sender: AnyObject) {
+    BOShareViewController
+      .presentShareViewController(from: self,
+                                  shareContent: shareContentWithoutMetaData,
+                                  options: shareOptions) { (completed, shareContent) in
+                                    print(shareContent)
+    }
+  }
 
   @IBAction func share(sender: AnyObject) {
-    BOShareViewController.presentShareViewController(from: self,
-                                                     shareViewModel: shareViewModel,
-                                                     shareDelegate: self)
-  }
-}
-
-extension ViewController: ShareDelegate {
-  func willAppear() {
-    print("will appear")
-  }
-
-  func submit(viewModel: ShareViewModel) {
-    print("\(viewModel)")
-  }
-
-  func willDisapear() {
-    print("will disapear")
+    BOShareViewController
+      .presentShareViewController(from: self,
+                                  shareContent: shareContentWithMetaData,
+                                  options: shareOptions) { (completed, shareContent) in
+                                    print(shareContent)
+    }
   }
 }
