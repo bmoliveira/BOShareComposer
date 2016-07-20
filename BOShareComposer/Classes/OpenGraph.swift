@@ -41,12 +41,12 @@ extension OpenGraph {
   }
 
   private static func executeRequest(url url: NSURL, completion: (String?) -> ()) {
-    var session = NSURLSession.sharedSession()
+    let session = NSURLSession.sharedSession()
 
     let request = NSMutableURLRequest(URL: url, cachePolicy: .ReturnCacheDataElseLoad,
                                       timeoutInterval: 10)
     request.setValue("Facebot", forHTTPHeaderField: "User-Agent")
-    var task = session.dataTaskWithRequest(request) { (data, response, error) in
+    let task = session.dataTaskWithRequest(request) { (data, response, error) in
       guard let data = data where error == nil else {
         completion(nil)
         return

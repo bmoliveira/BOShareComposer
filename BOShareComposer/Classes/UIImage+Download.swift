@@ -11,10 +11,10 @@ import UIKit
 extension UIImageView {
 
   func setImage(withUrl url: NSURL) {
-    var session = NSURLSession.sharedSession()
+    let session = NSURLSession.sharedSession()
     let request = NSMutableURLRequest(URL: url, cachePolicy: .ReturnCacheDataElseLoad,
                                       timeoutInterval: 10)
-    var task = session.dataTaskWithRequest(request) { (data, response, error) in
+    let task = session.dataTaskWithRequest(request) { (data, response, error) in
       dispatch_async(dispatch_get_main_queue()) {
         guard let data = data where error == nil else {
           self.image = nil

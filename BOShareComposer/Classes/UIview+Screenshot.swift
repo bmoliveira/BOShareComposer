@@ -10,12 +10,15 @@ import UIKit
 
 extension UIView{
 
-  var screenshot: UIImage {
+  var screenshot: UIImage? {
 
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
-    let context = UIGraphicsGetCurrentContext();
-    self.layer.renderInContext(context!)
-    let screenShot = UIGraphicsGetImageFromCurrentImageContext();
+    guard let context = UIGraphicsGetCurrentContext() else {
+      return nil
+    }
+
+    self.layer.renderInContext(context)
+    let screenShot = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext();
     return screenShot
   }
