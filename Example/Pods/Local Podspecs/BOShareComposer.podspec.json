@@ -1,6 +1,6 @@
 {
   "name": "BOShareComposer",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "summary": "A simple text + URL share composer",
   "description": "Composer like share to do custom shares, example: share via direct message twitter they dont have\nany composer to send direct messages",
   "homepage": "https://github.com/bmoliveira/BOShareComposer",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/bmoliveira/BOShareComposer.git",
-    "tag": "0.1.0"
+    "tag": "0.2.1"
   },
   "social_media_url": "https://twitter.com/_bmoliveira",
   "platforms": {
@@ -22,7 +22,7 @@
   "source_files": "BOShareComposer/Classes/**/*",
   "dependencies": {
     "SnapKit": [
-      "= 0.30.0.beta2"
+      "= 0.21.1"
     ],
     "Kanna": [
       "~> 1.1"

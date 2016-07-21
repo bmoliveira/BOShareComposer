@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import WebKit
 
-public extension BOShareViewController {
+public extension ShareViewController {
   public static func presentShareViewController(from viewController: UIViewController,
                                                      shareContent: ShareContent,
                                                      options: ShareOptions = ShareOptions(),
@@ -18,7 +18,7 @@ public extension BOShareViewController {
 
     viewController.navigationController?.modalPresentationStyle = .OverCurrentContext
     viewController.modalPresentationStyle = .OverCurrentContext
-    let shareViewController = BOShareViewController()
+    let shareViewController = ShareViewController()
     shareViewController.completion = completion
     shareViewController.options = options
     shareViewController.shareContent = shareContent
@@ -26,7 +26,7 @@ public extension BOShareViewController {
   }
 }
 
-public class BOShareViewController: UIViewController {
+public class ShareViewController: UIViewController {
 
   private var metadataImageViewSize = CGSize(width: 70, height: 70)
 
@@ -76,7 +76,7 @@ public class BOShareViewController: UIViewController {
         return
       }
       let size = showMetadata ? metadataImageViewSize : CGSize.zero
-      metadataImageView.snp.updateConstraints { make in
+      metadataImageView.snp_updateConstraints { make in
         make.height.equalTo(size.height)
         make.width.equalTo(size.width)
       }
@@ -177,7 +177,7 @@ public class BOShareViewController: UIViewController {
   }
 }
 
-extension BOShareViewController: WKNavigationDelegate {
+extension ShareViewController: WKNavigationDelegate {
   public func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
                       withError error: NSError) {
     print("failed navigation")
@@ -195,7 +195,7 @@ extension BOShareViewController: WKNavigationDelegate {
 
 }
 
-extension BOShareViewController {
+extension ShareViewController {
 
   private func loadMetadata(shareContent: ShareContent) {
     guard let link = shareContent.link where self.showMetadata else {
@@ -243,13 +243,13 @@ extension BOShareViewController {
   private func setupViews() {
     view.backgroundColor = UIColor.whiteColor()
     view.addSubview(backgroundView)
-    backgroundView.snp.makeConstraints { make in
+    backgroundView.snp_makeConstraints { make in
       make.edges.equalTo(self.view)
     }
 
     view.addSubview(containerView)
 
-    containerView.snp.makeConstraints { make in
+    containerView.snp_makeConstraints { make in
       make.top.equalTo(backgroundView).inset(60)
       make.left.equalTo(backgroundView).inset(16)
       make.right.equalTo(backgroundView).inset(16)
@@ -257,38 +257,38 @@ extension BOShareViewController {
 
     let contentView = containerView.contentView
     contentView.addSubview(dismissButton)
-    dismissButton.snp.makeConstraints { make in
+    dismissButton.snp_makeConstraints { make in
       make.top.equalTo(contentView).inset(4)
       make.left.equalTo(contentView).inset(8)
     }
 
     contentView.addSubview(confirmButton)
-    confirmButton.snp.makeConstraints { make in
+    confirmButton.snp_makeConstraints { make in
       make.top.equalTo(contentView).inset(4)
       make.right.equalTo(contentView).inset(8)
     }
 
     contentView.addSubview(titleDivider)
-    titleDivider.snp.makeConstraints { make in
-      make.top.equalTo(dismissButton.snp.bottom)
+    titleDivider.snp_makeConstraints { make in
+      make.top.equalTo(dismissButton.snp_bottom)
       make.left.equalTo(contentView)
       make.right.equalTo(contentView)
       make.height.equalTo(1)
     }
 
     contentView.addSubview(popupTitle)
-    popupTitle.snp.makeConstraints { make in
+    popupTitle.snp_makeConstraints { make in
       make.top.equalTo(contentView)
-      make.bottom.equalTo(titleDivider.snp.top)
+      make.bottom.equalTo(titleDivider.snp_top)
       make.centerX.equalTo(contentView)
-      make.left.equalTo(dismissButton.snp.right).priorityLow()
-      make.right.equalTo(confirmButton.snp.left).priorityLow()
+      make.left.equalTo(dismissButton.snp_right).priorityLow()
+      make.right.equalTo(confirmButton.snp_left).priorityLow()
     }
 
     let dummyContentView = UIView()
     contentView.addSubview(dummyContentView)
-    dummyContentView.snp.makeConstraints { make in
-      make.top.equalTo(titleDivider.snp.bottom)
+    dummyContentView.snp_makeConstraints { make in
+      make.top.equalTo(titleDivider.snp_bottom)
       make.left.equalTo(contentView).inset(8)
       make.right.equalTo(contentView).inset(8)
       make.bottom.equalTo(contentView).inset(8)
@@ -296,7 +296,7 @@ extension BOShareViewController {
     }
 
     dummyContentView.addSubview(metadataImageView)
-    metadataImageView.snp.makeConstraints { make in
+    metadataImageView.snp_makeConstraints { make in
       make.right.equalTo(dummyContentView)
       make.height.equalTo(showMetadata ? metadataImageViewSize.height : 0)
       make.width.equalTo(showMetadata ? metadataImageViewSize.width : 0)
@@ -304,19 +304,19 @@ extension BOShareViewController {
     }
 
     dummyContentView.addSubview(popupBody)
-    popupBody.snp.makeConstraints { make in
+    popupBody.snp_makeConstraints { make in
       make.top.equalTo(dummyContentView)
       make.left.equalTo(dummyContentView)
-      make.right.equalTo(metadataImageView.snp.left)
+      make.right.equalTo(metadataImageView.snp_left)
       make.bottom.equalTo(dummyContentView)
     }
 
     view.addSubview(metadataWebView)
-    metadataWebView.snp.makeConstraints { make in
-      make.top.equalTo(view.snp.bottom)
-      make.left.equalTo(view.snp.right)
-      make.height.equalTo(view.snp.width)
-      make.width.equalTo(view.snp.width)
+    metadataWebView.snp_makeConstraints { make in
+      make.top.equalTo(view.snp_bottom)
+      make.left.equalTo(view.snp_right)
+      make.height.equalTo(view.snp_width)
+      make.width.equalTo(view.snp_width)
     }
   }
 }

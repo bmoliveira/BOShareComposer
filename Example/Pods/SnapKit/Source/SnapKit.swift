@@ -1,7 +1,7 @@
 //
 //  SnapKit
 //
-//  Copyright (c) 2011-Present SnapKit Team - https://github.com/SnapKit
+//  Copyright (c) 2011-2015 SnapKit Team - https://github.com/SnapKit
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,21 @@
 //  THE SOFTWARE.
 
 #if os(iOS) || os(tvOS)
-    import UIKit
+import UIKit
+public typealias InterfaceLayoutDirection = UIUserInterfaceLayoutDirection
+public typealias LayoutSupport = UILayoutSupport
 #else
-    import AppKit
+import AppKit
+public typealias InterfaceLayoutDirection = NSUserInterfaceLayoutDirection
+public class LayoutSupport {}
 #endif
 
-
-public class ConstraintMakerFinalizable {
+/**
+    Used to configure different parts of SnapKit
+*/
+public struct Config {
     
-    internal let description: ConstraintDescription
-    
-    internal init(_ description: ConstraintDescription) {
-        self.description = description
-    }
-    
-    public var constraint: Constraint {
-        return self.description.constraint!
-    }
+    /// The interface layout direction
+    public static var interfaceLayoutDirection = InterfaceLayoutDirection.LeftToRight
     
 }

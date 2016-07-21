@@ -1,7 +1,7 @@
 //
 //  SnapKit
 //
-//  Copyright (c) 2011-Present SnapKit Team - https://github.com/SnapKit
+//  Copyright (c) 2011-2015 SnapKit Team - https://github.com/SnapKit
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -22,31 +22,62 @@
 //  THE SOFTWARE.
 
 #if os(iOS) || os(tvOS)
-    import UIKit
+import UIKit
 #else
-    import AppKit
+import AppKit
 #endif
 
+/**
+    Used to allow adding a snp_label to a View for debugging purposes
+*/
+public extension View {
+    
+    public var snp_label: String? {
+        get {
+            return objc_getAssociatedObject(self, &labelKey) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &labelKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+    
+}
+
+/**
+    Used to allow adding a snp_label to a LayoutConstraint for debugging purposes
+*/
 public extension LayoutConstraint {
     
+    public var snp_label: String? {
+        get {
+            return objc_getAssociatedObject(self, &labelKey) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &labelKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+
     override public var description: String {
         var description = "<"
         
         description += descriptionForObject(self)
         
-        description += " \(descriptionForObject(self.firstItem))"
-        if self.firstAttribute != .NotAnAttribute {
-            description += ".\(descriptionForAttribute(self.firstAttribute))"
+        if let firstItem: AnyObject = self.firstItem {
+            description += " \(descriptionForObject(firstItem))"
         }
         
-        description += " \(descriptionForRelation(self.relation))"
+        if self.firstAttribute != .NotAnAttribute {
+            description += ".\(self.firstAttribute.snp_description)"
+        }
+        
+        description += " \(self.relation.snp_description)"
         
         if let secondItem: AnyObject = self.secondItem {
             description += " \(descriptionForObject(secondItem))"
         }
         
         if self.secondAttribute != .NotAnAttribute {
-            description += ".\(descriptionForAttribute(self.secondAttribute))"
+            description += ".\(self.secondAttribute.snp_description)"
         }
         
         if self.multiplier != 1.0 {
@@ -72,19 +103,57 @@ public extension LayoutConstraint {
         return description
     }
     
-}
-
-private func descriptionForRelation(relation: NSLayoutRelation) -> String {
-    switch relation {
-    case .Equal:                return "=="
-    case .GreaterThanOrEqual:   return ">="
-    case .LessThanOrEqual:      return "<="
+    internal var snp_makerFile: String? {
+        return self.snp_constraint?.makerFile
     }
+    
+    internal var snp_makerLine: UInt? {
+        return self.snp_constraint?.makerLine
+    }
+    
 }
 
-private func descriptionForAttribute(attribute: NSLayoutAttribute) -> String {
-    #if os(iOS) || os(tvOS)
-        switch attribute {
+private var labelKey = ""
+
+private func descriptionForObject(object: AnyObject) -> String {
+    let pointerDescription = NSString(format: "%p", ObjectIdentifier(object).uintValue)
+    var desc = ""
+    
+    desc += object.dynamicType.description()
+    
+    if let object = object as? View {
+        desc += ":\(object.snp_label ?? pointerDescription)"
+    } else if let object = object as? LayoutConstraint {
+        desc += ":\(object.snp_label ?? pointerDescription)"
+    } else {
+        desc += ":\(pointerDescription)"
+    }
+    
+    if let object = object as? LayoutConstraint, let file = object.snp_makerFile, let line = object.snp_makerLine {
+        desc += "@\(file)#\(line)"
+    }
+    
+    desc += ""
+    return desc
+}
+
+private extension NSLayoutRelation {
+    
+    private var snp_description: String {
+        switch self {
+        case .Equal:                return "=="
+        case .GreaterThanOrEqual:   return ">="
+        case .LessThanOrEqual:      return "<="
+        }
+    }
+    
+}
+
+private extension NSLayoutAttribute {
+    
+    private var snp_description: String {
+        #if os(iOS) || os(tvOS)
+        switch self {
         case .NotAnAttribute:       return "notAnAttribute"
         case .Top:                  return "top"
         case .Left:                 return "left"
@@ -96,7 +165,7 @@ private func descriptionForAttribute(attribute: NSLayoutAttribute) -> String {
         case .Height:               return "height"
         case .CenterX:              return "centerX"
         case .CenterY:              return "centerY"
-        case .LastBaseline:         return "lastBaseline"
+        case .LastBaseline:             return "baseline"
         case .FirstBaseline:        return "firstBaseline"
         case .TopMargin:            return "topMargin"
         case .LeftMargin:           return "leftMargin"
@@ -107,8 +176,8 @@ private func descriptionForAttribute(attribute: NSLayoutAttribute) -> String {
         case .CenterXWithinMargins: return "centerXWithinMargins"
         case .CenterYWithinMargins: return "centerYWithinMargins"
         }
-    #else
-        switch attribute {
+        #else
+        switch self {
         case .NotAnAttribute:       return "notAnAttribute"
         case .Top:                  return "top"
         case .Left:                 return "left"
@@ -120,30 +189,11 @@ private func descriptionForAttribute(attribute: NSLayoutAttribute) -> String {
         case .Height:               return "height"
         case .CenterX:              return "centerX"
         case .CenterY:              return "centerY"
-        case .LastBaseline:         return "lastBaseline"
+        case .LastBaseline:             return "baseline"
         default:                    return "default"
         }
-    #endif
-}
-
-private func descriptionForObject(object: AnyObject) -> String {
-    let pointerDescription = NSString(format: "%p", ObjectIdentifier(object).uintValue)
-    var desc = ""
-    
-    desc += object.dynamicType.description()
-    
-    if let object = object as? ConstraintView {
-        desc += ":\(object.snp.label ?? pointerDescription)"
-    } else if let object = object as? LayoutConstraint {
-        desc += ":\(object.label ?? pointerDescription)"
-    } else {
-        desc += ":\(pointerDescription)"
+        #endif
+        
     }
     
-    if let object = object as? LayoutConstraint, let file = object.constraint?.sourceLocation.0, let line = object.constraint?.sourceLocation.1 {
-        desc += "@\((file as NSString).lastPathComponent)#\(line)"
-    }
-    
-    desc += ""
-    return desc
 }

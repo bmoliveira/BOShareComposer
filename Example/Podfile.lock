@@ -1,9 +1,9 @@
 PODS:
-  - BOShareComposer (0.1.0):
+  - BOShareComposer (0.2.1):
     - Kanna (~> 1.1)
-    - SnapKit (= 0.30.0.beta2)
+    - SnapKit (= 0.21.1)
   - Kanna (1.1.0)
-  - SnapKit (0.30.0.beta2)
+  - SnapKit (0.21.1)
 
 DEPENDENCIES:
   - BOShareComposer (from `../`)
@@ -13,9 +13,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BOShareComposer: 1f0feb84ce5c5583cd35b32d18a3e4938f3849bf
+  BOShareComposer: 325010e86fb2040802bd14e3b3a71b185200ec53
   Kanna: 355ed0193e5d8caf4fd996856b5bc98d586c11b6
-  SnapKit: c4bb32b1d3c5d18ff63bf95ffcbc599d2bab964c
+  SnapKit: bbad04cb016c7cead63965f16b00c09318d271ee
 
 PODFILE CHECKSUM: 34105de0c22ed3618df2454faee766a693725c3d
 

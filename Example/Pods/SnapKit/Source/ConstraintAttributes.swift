@@ -1,7 +1,7 @@
 //
 //  SnapKit
 //
-//  Copyright (c) 2011-Present SnapKit Team - https://github.com/SnapKit
+//  Copyright (c) 2011-2015 SnapKit Team - https://github.com/SnapKit
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,14 @@
 //  THE SOFTWARE.
 
 #if os(iOS) || os(tvOS)
-    import UIKit
+import UIKit
 #else
-    import AppKit
+import AppKit
 #endif
 
-
+/**
+    Used to define `NSLayoutAttributes` in a more concise and composite manner
+*/
 internal struct ConstraintAttributes: OptionSetType, BooleanType {
     
     internal init(rawValue: UInt) {
@@ -62,9 +64,8 @@ internal struct ConstraintAttributes: OptionSetType, BooleanType {
     internal static var Height: ConstraintAttributes { return self.init(128) }
     internal static var CenterX: ConstraintAttributes { return self.init(256) }
     internal static var CenterY: ConstraintAttributes { return self.init(512) }
+    internal static var Baseline: ConstraintAttributes { return self.init(1024) }
     
-    @available(iOS 8.0, *)
-    internal static var LastBaseline: ConstraintAttributes { return self.init(1024) }
     @available(iOS 8.0, *)
     internal static var FirstBaseline: ConstraintAttributes { return self.init(2048) }
     @available(iOS 8.0, *)
@@ -128,58 +129,58 @@ internal struct ConstraintAttributes: OptionSetType, BooleanType {
         if (self.contains(ConstraintAttributes.CenterY)) {
             attrs.append(.CenterY)
         }
+        if (self.contains(ConstraintAttributes.Baseline)) {
+            #if swift(>=2.3)
+            attrs.append(.LastBaseline)
+            #else
+            attrs.append(.Baseline)
+            #endif
+        }
         
         #if os(iOS) || os(tvOS)
-            #if SNAPKIT_DEPLOYMENT_LEGACY
-                guard #available(iOS 8.0, *) else {
-                    return attrs
-                }
-            #endif
-            if (self.contains(ConstraintAttributes.FirstBaseline)) {
-                attrs.append(.FirstBaseline)
-            }
-            if (self.contains(ConstraintAttributes.LeftMargin)) {
-                attrs.append(.LeftMargin)
-            }
-            if (self.contains(ConstraintAttributes.RightMargin)) {
-                attrs.append(.RightMargin)
-            }
-            if (self.contains(ConstraintAttributes.TopMargin)) {
-                attrs.append(.TopMargin)
-            }
-            if (self.contains(ConstraintAttributes.BottomMargin)) {
-                attrs.append(.BottomMargin)
-            }
-            if (self.contains(ConstraintAttributes.LeadingMargin)) {
-                attrs.append(.LeadingMargin)
-            }
-            if (self.contains(ConstraintAttributes.TrailingMargin)) {
-                attrs.append(.TrailingMargin)
-            }
-            if (self.contains(ConstraintAttributes.CenterXWithinMargins)) {
-                attrs.append(.CenterXWithinMargins)
-            }
-            if (self.contains(ConstraintAttributes.CenterYWithinMargins)) {
-                attrs.append(.CenterYWithinMargins)
-            }
+        #if SNAPKIT_DEPLOYMENT_LEGACY
+        guard #available(iOS 8.0, *) else {
+            return attrs
+        }
+        #endif
+        if (self.contains(ConstraintAttributes.FirstBaseline)) {
+            attrs.append(.FirstBaseline)
+        }
+        if (self.contains(ConstraintAttributes.LeftMargin)) {
+            attrs.append(.LeftMargin)
+        }
+        if (self.contains(ConstraintAttributes.RightMargin)) {
+            attrs.append(.RightMargin)
+        }
+        if (self.contains(ConstraintAttributes.TopMargin)) {
+            attrs.append(.TopMargin)
+        }
+        if (self.contains(ConstraintAttributes.BottomMargin)) {
+            attrs.append(.BottomMargin)
+        }
+        if (self.contains(ConstraintAttributes.LeadingMargin)) {
+            attrs.append(.LeadingMargin)
+        }
+        if (self.contains(ConstraintAttributes.TrailingMargin)) {
+            attrs.append(.TrailingMargin)
+        }
+        if (self.contains(ConstraintAttributes.CenterXWithinMargins)) {
+            attrs.append(.CenterXWithinMargins)
+        }
+        if (self.contains(ConstraintAttributes.CenterYWithinMargins)) {
+            attrs.append(.CenterYWithinMargins)
+        }
         #endif
         
         return attrs
     }
 }
-
-internal func + (left: ConstraintAttributes, right: ConstraintAttributes) -> ConstraintAttributes {
-    return left.union(right)
-}
-
 internal func +=(inout left: ConstraintAttributes, right: ConstraintAttributes) {
     left.unionInPlace(right)
 }
-
 internal func -=(inout left: ConstraintAttributes, right: ConstraintAttributes) {
     left.subtractInPlace(right)
 }
-
 internal func ==(left: ConstraintAttributes, right: ConstraintAttributes) -> Bool {
     return left.rawValue == right.rawValue
 }

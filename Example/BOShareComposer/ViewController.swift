@@ -41,7 +41,7 @@ class ViewController: UIViewController {
   }
 
   @IBAction func shareWithoutData(sender: AnyObject) {
-    BOShareViewController
+    ShareViewController
       .presentShareViewController(from: self,
                                   shareContent: shareContentWithoutMetaData,
                                   options: shareOptionsNoMetadata) { (completed, shareContent) in
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
   }
 
   @IBAction func shareWithoutMetadata(sender: AnyObject) {
-    BOShareViewController
+    ShareViewController
       .presentShareViewController(from: self,
                                   shareContent: shareContentWithoutMetaData,
                                   options: shareOptions) { (completed, shareContent) in
@@ -59,7 +59,7 @@ class ViewController: UIViewController {
   }
 
   @IBAction func share(sender: AnyObject) {
-    BOShareViewController
+    ShareViewController
       .presentShareViewController(from: self,
                                   shareContent: shareContentWithMetaData,
                                   options: shareOptions) { (completed, shareContent) in

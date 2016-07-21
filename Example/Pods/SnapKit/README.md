@@ -1,4 +1,4 @@
-<img src="http://snapkit.io/images/banner.png" alt="" />
+<img src="http://snapkit.io/images/banner.jpg" alt="" />
 
 SnapKit is a DSL to make Auto Layout easy on both iOS and OS X.
 
@@ -17,7 +17,7 @@ class MyViewController: UIViewController {
         super.viewDidLoad()
 
         self.view.addSubview(box)
-        box.snp.makeConstraints { (make) -> Void in
+        box.snp_makeConstraints { make in
            make.width.height.equalTo(50)
            make.center.equalTo(self.view)
         }
