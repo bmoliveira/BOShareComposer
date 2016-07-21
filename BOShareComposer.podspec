@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'BOShareComposer'
-  s.version          = '0.2.1'
+  s.version          = '0.2.2'
   s.summary          = 'A simple text + URL share composer'
   s.description      = <<-DESC
 Composer like share to do custom shares, example: share via direct message twitter they dont have
