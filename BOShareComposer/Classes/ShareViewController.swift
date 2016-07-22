@@ -304,7 +304,7 @@ extension ShareViewController {
       make.bottom.equalTo(titleDivider.snp_top).priorityMedium()
       make.centerX.equalTo(contentView)
       make.centerY.equalTo(dismissButton).priorityHigh()
-      make.left.equalTo(dismissButton.snp_right)
+      make.left.equalTo(dismissButton.snp_right).offset(2)
       make.right.equalTo(confirmButton.snp_left).offset(-4)
     }
     popupTitle.setContentHuggingPriority(UILayoutPriority.init(1),
