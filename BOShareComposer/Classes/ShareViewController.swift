@@ -263,7 +263,7 @@ extension ShareViewController {
     view.addSubview(containerView)
 
     containerView.snp_makeConstraints { make in
-      make.bottom.equalTo(backgroundView).inset(360)
+      make.top.equalTo(backgroundView).inset(70)
       make.left.equalTo(backgroundView).inset(16)
       make.right.equalTo(backgroundView).inset(16)
     }
