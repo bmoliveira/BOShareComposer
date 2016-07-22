@@ -26,7 +26,7 @@ class ViewController: UIViewController {
   }()
 
   lazy var shareOptions: ShareOptions = {
-    return ShareOptions(tintColor: UIColor.redColor(), title: "Custom title", dismissText: "Dismiss",
+    return ShareOptions(tintColor: UIColor.redColor(), title: "Custom long text title that does not fit", dismissText: "Dismiss",
                         confirmText: "Confirm", showMetadata: true)
   }()
 

@@ -111,6 +111,9 @@ public class ShareViewController: UIViewController {
   lazy var popupTitle: UILabel = {
     let label = UILabel()
     label.font = UIFont.systemFontOfSize(17)
+    label.minimumScaleFactor = 0.5
+    label.adjustsFontSizeToFitWidth = true
+    label.textAlignment = .Center
     return label
   }()
 
@@ -272,16 +275,20 @@ extension ShareViewController {
     contentView.addSubview(dismissButton)
     dismissButton.snp_makeConstraints { make in
       make.top.equalTo(contentView)
-      make.left.equalTo(contentView).inset(12)
+      make.left.equalTo(contentView).inset(8)
       make.height.equalTo(40)
     }
+    dismissButton.setContentCompressionResistancePriority(UILayoutPriority.init(1000), forAxis: UILayoutConstraintAxis.Horizontal)
+
 
     contentView.addSubview(confirmButton)
     confirmButton.snp_makeConstraints { make in
       make.top.equalTo(contentView)
-      make.right.equalTo(contentView).inset(12)
+      make.right.equalTo(contentView).inset(8)
       make.height.equalTo(40)
     }
+    confirmButton.setContentCompressionResistancePriority(UILayoutPriority.init(1000),
+                                                          forAxis: .Horizontal)
 
     contentView.addSubview(titleDivider)
     titleDivider.snp_makeConstraints { make in
@@ -297,9 +304,11 @@ extension ShareViewController {
       make.bottom.equalTo(titleDivider.snp_top).priorityMedium()
       make.centerX.equalTo(contentView)
       make.centerY.equalTo(dismissButton).priorityHigh()
-      make.left.equalTo(dismissButton.snp_right).priorityLow()
-      make.right.equalTo(confirmButton.snp_left).priorityLow()
+      make.left.equalTo(dismissButton.snp_right)
+      make.right.equalTo(confirmButton.snp_left).offset(-4)
     }
+    popupTitle.setContentHuggingPriority(UILayoutPriority.init(1),
+                                         forAxis: .Horizontal)
 
     let dummyContentView = UIView()
     contentView.addSubview(dummyContentView)
