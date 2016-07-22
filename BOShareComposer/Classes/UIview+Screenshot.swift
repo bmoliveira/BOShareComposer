@@ -11,15 +11,10 @@ import UIKit
 extension UIView{
 
   var screenshot: UIImage? {
-
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
-    guard let context = UIGraphicsGetCurrentContext() else {
-      return nil
-    }
-
-    self.layer.renderInContext(context)
-    let screenShot = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext();
-    return screenShot
+    UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.mainScreen().scale)
+    drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return image
   }
 }

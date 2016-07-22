@@ -16,12 +16,12 @@ public extension ShareViewController {
                                                      options: ShareOptions = ShareOptions(),
                                                      completion: ((Bool, ShareContent?) -> ())) {
 
-    viewController.navigationController?.modalPresentationStyle = .OverCurrentContext
-    viewController.modalPresentationStyle = .OverCurrentContext
+
     let shareViewController = ShareViewController()
     shareViewController.completion = completion
     shareViewController.options = options
     shareViewController.shareContent = shareContent
+    shareViewController.modalPresentationStyle = .OverCurrentContext
     viewController.presentViewController(shareViewController, animated: false, completion: nil)
   }
 }
@@ -60,8 +60,12 @@ public class ShareViewController: UIViewController {
       }
       dismissButton.tintColor = options.tintColor
       dismissButton.setTitle(options.dismissText, forState: .Normal)
-      confirmButton.tintColor = options.tintColor
+      dismissButton.setTitleColor(options.tintColor, forState: .Normal)
+
+      confirmButton.titleLabel?.textColor = options.tintColor
       confirmButton.setTitle(options.confirmText, forState: .Normal)
+      confirmButton.setTitleColor(options.tintColor, forState: .Normal)
+
       popupTitle.text = options.title
       popupBody.resignFirstResponder()
       popupBody.keyboardAppearance = options.keyboardAppearance
@@ -89,19 +93,24 @@ public class ShareViewController: UIViewController {
   private var completion: ((Bool, ShareContent?) -> ())?
 
   lazy var dismissButton: UIButton = {
-    let button = UIButton(type: UIButtonType.System)
+    let button = UIButton(type: .Custom)
     button.addTarget(self, action: #selector(cancelAction), forControlEvents: .TouchUpInside)
+    button.titleLabel?.font = UIFont.systemFontOfSize(15)
+    button.titleLabel?.textAlignment = .Right
     return button
   }()
 
   lazy var confirmButton: UIButton = {
-    let button = UIButton(type: UIButtonType.System)
+    let button = UIButton(type: .Custom)
     button.addTarget(self, action: #selector(sendAction), forControlEvents: .TouchUpInside)
+    button.titleLabel?.font = UIFont.boldSystemFontOfSize(17)
+    button.titleLabel?.textAlignment = .Left
     return button
   }()
 
   lazy var popupTitle: UILabel = {
     let label = UILabel()
+    label.font = UIFont.systemFontOfSize(17)
     return label
   }()
 
@@ -116,7 +125,7 @@ public class ShareViewController: UIViewController {
     textField.editable = true
     textField.backgroundColor = UIColor.clearColor()
     textField.scrollEnabled = true
-    textField.font = UIFont.systemFontOfSize(18)
+    textField.font = UIFont.systemFontOfSize(17)
     textField.becomeFirstResponder()
     return textField
   }()
@@ -126,12 +135,14 @@ public class ShareViewController: UIViewController {
     imageView.contentMode = .ScaleAspectFill
     imageView.clipsToBounds = true
     imageView.backgroundColor = UIColor.whiteColor()
+    imageView.layer.borderWidth = 1
+    imageView.layer.borderColor = UIColor.blackColor().colorWithAlphaComponent(0.3).CGColor
     return imageView
   }()
 
   lazy var backgroundView: UIView = {
     let view = UIView()
-    view.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+    view.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
     return view
   }()
 
@@ -158,6 +169,10 @@ public class ShareViewController: UIViewController {
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
     hideView()
+  }
+
+  public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    return .LightContent
   }
 
   func cancelAction() {
@@ -191,8 +206,6 @@ extension ShareViewController: WKNavigationDelegate {
       self.snapWebView(webView)
     })
   }
-
-
 }
 
 extension ShareViewController {
@@ -222,7 +235,7 @@ extension ShareViewController {
   }
 
   private func showView() {
-    UIView.animateWithDuration(0.5) {
+    UIView.animateWithDuration(0.7) {
       self.containerView.alpha = 1
     }
   }
@@ -241,7 +254,7 @@ extension ShareViewController {
   }
 
   private func setupViews() {
-    view.backgroundColor = UIColor.whiteColor()
+    view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.1)
     view.addSubview(backgroundView)
     backgroundView.snp_makeConstraints { make in
       make.edges.equalTo(self.view)
@@ -250,7 +263,7 @@ extension ShareViewController {
     view.addSubview(containerView)
 
     containerView.snp_makeConstraints { make in
-      make.top.equalTo(backgroundView).inset(60)
+      make.bottom.equalTo(backgroundView).inset(360)
       make.left.equalTo(backgroundView).inset(16)
       make.right.equalTo(backgroundView).inset(16)
     }
@@ -258,14 +271,16 @@ extension ShareViewController {
     let contentView = containerView.contentView
     contentView.addSubview(dismissButton)
     dismissButton.snp_makeConstraints { make in
-      make.top.equalTo(contentView).inset(4)
-      make.left.equalTo(contentView).inset(8)
+      make.top.equalTo(contentView)
+      make.left.equalTo(contentView).inset(12)
+      make.height.equalTo(40)
     }
 
     contentView.addSubview(confirmButton)
     confirmButton.snp_makeConstraints { make in
-      make.top.equalTo(contentView).inset(4)
-      make.right.equalTo(contentView).inset(8)
+      make.top.equalTo(contentView)
+      make.right.equalTo(contentView).inset(12)
+      make.height.equalTo(40)
     }
 
     contentView.addSubview(titleDivider)
@@ -278,9 +293,10 @@ extension ShareViewController {
 
     contentView.addSubview(popupTitle)
     popupTitle.snp_makeConstraints { make in
-      make.top.equalTo(contentView)
-      make.bottom.equalTo(titleDivider.snp_top)
+      make.top.equalTo(contentView).priorityMedium()
+      make.bottom.equalTo(titleDivider.snp_top).priorityMedium()
       make.centerX.equalTo(contentView)
+      make.centerY.equalTo(dismissButton).priorityHigh()
       make.left.equalTo(dismissButton.snp_right).priorityLow()
       make.right.equalTo(confirmButton.snp_left).priorityLow()
     }
@@ -292,7 +308,7 @@ extension ShareViewController {
       make.left.equalTo(contentView).inset(8)
       make.right.equalTo(contentView).inset(8)
       make.bottom.equalTo(contentView).inset(8)
-      make.height.equalTo(140)
+      make.height.equalTo(160)
     }
 
     dummyContentView.addSubview(metadataImageView)
@@ -300,14 +316,14 @@ extension ShareViewController {
       make.right.equalTo(dummyContentView)
       make.height.equalTo(showMetadata ? metadataImageViewSize.height : 0)
       make.width.equalTo(showMetadata ? metadataImageViewSize.width : 0)
-      make.centerY.equalTo(dummyContentView)
+      make.top.equalTo(dummyContentView).inset(8)
     }
 
     dummyContentView.addSubview(popupBody)
     popupBody.snp_makeConstraints { make in
       make.top.equalTo(dummyContentView)
       make.left.equalTo(dummyContentView)
-      make.right.equalTo(metadataImageView.snp_left)
+      make.right.equalTo(metadataImageView.snp_left).offset(-4)
       make.bottom.equalTo(dummyContentView)
     }
 

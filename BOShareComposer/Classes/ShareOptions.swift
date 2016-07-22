@@ -11,7 +11,7 @@ import Foundation
 public struct ShareOptions {
 
   // Buttons tint color
-  public var tintColor: UIColor?
+  public var tintColor: UIColor
 
   // Composer title
   public var title: String
@@ -28,7 +28,7 @@ public struct ShareOptions {
   // Keyboard appearence
   public var keyboardAppearance: UIKeyboardAppearance
 
-  public init (tintColor: UIColor? = nil, title: String = "Share", dismissText: String = "Cancel",
+  public init (tintColor: UIColor = UIView().tintColor, title: String = "Share", dismissText: String = "Cancel",
                confirmText: String = "Send", showMetadata: Bool = true,
                keyboardAppearance: UIKeyboardAppearance = .Dark) {
     self.tintColor = tintColor
